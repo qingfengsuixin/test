@@ -1,0 +1,16 @@
+//给定数组值{1,-2,3,5,-1}求之中最大的两个数的和
+#include<stdio.h>
+int main(){
+int a[]={1,-2,3,5,-1};
+int i,j.k,n;
+for(i=0;i<a.length;i++)
+  for(j=0;j<a.length-i;j++)
+   if(a[i]<a[i+1]){
+   k=a[i+1];
+   a[i+1]=a[i];
+   a[i]=k;
+   }
+   n=a[0]+a[1];
+   printf("%d",n);
+   return 0;
+}
