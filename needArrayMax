@@ -1,0 +1,56 @@
+//软件工程作业P37第二题
+import java.util.Arrays;
+
+//假设传入的数组是{1，-2,3，-2，5，1}
+public class Test0000 {
+	public void max(int[] a) {
+		int b[] = new int[10];
+		int c[] = new int[10];
+		int d[] = new int[10];
+		int e[] = new int[10];
+		int f[] = new int[10];
+		int g[] = new int[5];
+		for (int i = 0; i < a.length - 1; i++) {
+			b[i] = a[i] + a[i + 1];
+			if (i + 2 <=5) {
+				c[i] = a[i] + a[i + 1] + a[i + 2];
+			}else{
+				continue;
+			}
+			if (i + 3 <= a.length - 1) {
+				d[i] = a[i] + a[i + 1] + a[i + 2] + a[i + 3];
+			}else{
+				continue;
+			}
+			if (i + 4 <= a.length - 1) {
+				e[i] = a[i] + a[i + 1] + a[i + 2] + a[i + 3] + a[i + 4];
+			}else{
+				continue;
+			}
+			if (i + 5 <=a.length - 1) {
+				f[i] = a[i] + a[i + 1] + a[i + 2] + a[i + 3] + a[i + 4]+ a[i + 5];
+			}else{
+				continue;
+			}
+		}
+		Arrays.sort(a);
+		Arrays.sort(b);
+		Arrays.sort(c);
+		Arrays.sort(d);
+		Arrays.sort(e);
+		Arrays.sort(f);
+		g[0] = b[9];
+		g[1] = c[9];
+		g[2] = d[9];
+		g[3] = e[9];
+		g[4] = f[9];
+		Arrays.sort(g);
+		System.out.println(g[4]);
+	}
+
+	public static void main(String[] args) {
+		int a[] = { 1, -2, 3, -2, 5, 1 };
+		new Test0000().max(a);
+	}
+}
+
