@@ -1,0 +1,23 @@
+//软件工程作业P37第三题
+import java.util.Arrays;
+
+//假设传入的数组是{how,are,you}
+public class Test0001 {
+	public void theExchangeOfWords(String[] a){
+		for (int i = 0; i < a.length/2; i++) {
+			String temp;
+			temp=a[i];
+			a[i]=a[a.length-1-i];
+			a[a.length-1-i]=temp;
+		}
+	System.out.println(	Arrays.toString(a));
+	}
+	public static void main(String[] args) {
+		String a[]=new String[3];
+		a[0]="how";
+		a[1]="are";
+		a[2]="you";
+		new Test0001().theExchangeOfWords(a);
+	}
+
+}
