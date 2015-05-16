@@ -1,0 +1,252 @@
+package 学生管理系统;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.io.RandomAccessFile;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+//作者：曹阳 主界面 注册模块  于前程  登陆查询模块
+public class StudentManage {
+	private Scanner scan = new Scanner(System.in);
+	// 定义一个布尔值，用于判断是否已经登陆，只有登陆后才能使用信息查询系统
+	boolean right = false;
+	// 定义一个集合用于录入学生信息记录
+	List<String> list = new ArrayList<String>();
+	// 定义一个集合用于存储查询时的行
+	List<String> cunChu = new ArrayList<String>();
+	List<String> dengLuYongHu=new ArrayList<String>();
+	private int num = 0;
+	private boolean flag=false;
+	private boolean find1=false;
+	private boolean find2=false;
+	private boolean dengLuYanZheng=false;
+//	private int dengLuNum=0;
+	// 建立一个方法在每次登陆前更新list集合
+	private void updataList() throws Exception {
+		BufferedReader br = new BufferedReader(new FileReader(new File("./student.txt")));
+		String line = null;
+		while ((line = br.readLine()) != null) {
+			this.list.add(line);
+		}
+		br.close();
+	}
+
+	// 登陆程序。先验证用户名在验证密码
+	private void login() throws Exception {
+		while (true) {
+			String heheda=null;
+			System.out.println("请输入用户名：");
+			String username = scan.nextLine();
+			for (int i = 0; i < list.size(); i++) {
+				String[] data = this.list.get(i).split(",");
+				if (username.equals(data[1].trim())) {
+					this.find1=true;
+					heheda=this.list.get(i);
+					this.dengLuYongHu.add(heheda);
+				}
+				}
+
+			if (find1) {
+					String[] data = heheda.split(",");
+                    System.out.println("请输入密码：");
+					String password = scan.nextLine();
+					for (int i = 0; i < this.dengLuYongHu.size(); i++) {
+						String[] miMa=dengLuYongHu.get(i).split(",");
+						if (password.equals(miMa[2].trim())) {
+							this.dengLuYanZheng=true;
+						}
+					}
+					if (dengLuYanZheng) {
+						System.out.println("登陆成功");
+						System.out.println("用户名：" + data[1] + " 昵称：" + data[3]);
+						right = true;
+						this.start();
+					} else {
+						System.out.println("密码输入错误！");
+						break;
+					}			
+			}else{
+				System.out.println("该用户不存在！");
+				break;
+			}
+			}
+		}
+	
+
+	// 用户注册  
+	private void register() throws Exception {
+		while (true) {
+			System.out.println("欢迎来到学生管理系统注册页面!");
+			String nums = this.dealString(String.valueOf(this.list.size() + 1),4);
+			System.out.println("请输入用户名：");
+			String userName = this.dealString(scan.nextLine(), 10);
+			System.out.println("请输入密码：");
+			String passWord = this.dealString(scan.nextLine(), 10);
+			System.out.println("请输入昵称：");
+			String name = this.dealString(scan.nextLine(), 10);
+			System.out.println("请输入学校：");
+			String schoolName = this.dealString(scan.nextLine(), 10);
+			System.out.println("请输入专业：");
+			String profession = this.dealString(scan.nextLine(), 10);
+			System.out.println("请输入住址：");
+			String address = this.dealString(scan.nextLine(), 10);
+			String result = nums + userName + passWord + name + schoolName+ profession + address;
+			System.out.println("是否确认注册Y/N");
+			String type = scan.nextLine();
+			if ("Y".equals(type.toUpperCase())) {
+				System.out.println("注册成功！");
+				PrintWriter pw = new PrintWriter(new FileWriter(new File("./student.txt"), true));
+				pw.println(result);
+				pw.close();
+				this.list.add(result);
+				this.start();
+			} else {
+				System.out.println("你取消了注册！");
+				break;
+			}
+		}
+	}
+
+	// 查询系统
+	private void informationSearch() throws Exception {
+		while (true) {
+			String heheda1=null;
+			System.out.println("请输入要查询的用户名：");
+			String chaXun = scan.nextLine();
+			this.cunChu.clear();
+			for (int i = 0; i <this. list.size(); i++) {
+				String[] datas = list.get(i).split(",");
+				if (chaXun.equals(datas[1].trim())) {
+					this.find2=true;
+					heheda1=this.list.get(i);
+					this.cunChu.add(heheda1);
+				} 
+			}
+			if (find2) {
+				for (int i = 0; i < cunChu.size(); i++) {
+					System.out.println(cunChu.get(i));
+				}
+				System.out.println("查询成功！");
+				System.out.println("请选择操作：[1]信息修改  [2]返回上一级");
+				String caozuo = scan.nextLine();
+				if ("1".equals(caozuo.trim())) {
+					this.change();
+					break;
+				} else if ("2".equals(caozuo.trim())) {
+					break;
+				} else {
+					System.out.println("序号选择错误");
+					System.out.println("程序返回上一级");
+					break;
+				}
+			}
+		}
+	}
+	// 查询系统下属信息修改子系统
+	private void change() throws Exception {
+			for (int i = 0; i < cunChu.size(); i++) {
+				System.out.println(cunChu.get(i));
+			}
+			System.out.println("请选择序号：");
+			String xuHao=scan.nextLine();
+			while(true){
+				for (int i = 0; i < cunChu.size(); i++) {
+					String[] da=cunChu.get(i).split(",");
+					if (xuHao.equals(da[0].trim())) {
+						this.flag=true;
+						this.num=Integer.parseInt(da[0].trim());
+						System.out.println(list.get(num-1));
+						String nums = this.dealString(String.valueOf(num),4);
+						System.out.println("请输入用户名：");
+						String userName = this.dealString(scan.nextLine(), 10);
+						System.out.println("请输入密码：");
+						String passWord = this.dealString(scan.nextLine(), 10);
+						System.out.println("请输入昵称：");
+						String name = this.dealString(scan.nextLine(), 10);
+						System.out.println("请输入学校：");
+						String schoolName = this.dealString(scan.nextLine(), 10);
+						System.out.println("请输入专业：");
+						String profession = this.dealString(scan.nextLine(), 10);
+						System.out.println("请输入住址：");
+						String address = this.dealString(scan.nextLine(), 10);
+						String result = nums + userName + passWord + name + schoolName+ profession + address;
+						long length=(num-1)*66;
+						RandomAccessFile rac=new RandomAccessFile("./student.txt","rw");
+						rac.seek(length);
+						rac.write(result.getBytes());
+						rac.close();
+						list.set((num-1), result);
+						System.out.println("修改成功！");
+						this.start();
+					}
+				}
+				if (flag==false) {
+					System.out.println("序号输入错误！请重新输入");
+					break;
+				}
+			}			
+	}
+
+	// 字符限制辅助方法
+	// 储存格式 序号（4）用户名（10）密码（10）昵称（10）学校（10）专业（10）住址（20）
+	private String dealString(String data, int length) {
+		byte[] bts = data.getBytes();
+		int leftNum = length - bts.length;
+		for (int i = 0; i < leftNum; i++) {
+			if (i == leftNum - 1) {
+				data = data + ",";
+			} else {
+				data = data + " ";
+			}
+		}
+		return data;
+	}
+
+	// 主界面用于选择功能
+	public void start() throws Exception {
+		this.list.clear();
+		this.updataList();
+		System.out.println("您好，欢迎登陆学生管理系统。");
+		System.out.println("请选择相应的功能：");
+		System.out.println("[1]=用户登录[2]=用户注册[3]=信息查询[4]=退出系统");
+		String zhuxuan = scan.nextLine();
+		while (true) {
+			switch (Integer.parseInt(zhuxuan)) {
+			case 1:
+				if (right == false) {
+					this.login();
+					break;
+				} else {
+					System.out.println("你已经登陆了，无需重复登录！");
+				}
+			case 2:
+				this.register();
+				break;
+			case 3:
+				if (right == true) {
+					this.informationSearch();
+					break;
+				} else {
+					System.out.println("对不起，你尚未登录。请登录！");
+					this.start();
+				}
+			case 4:
+				System.out.println("系统已退出！");
+				System.exit(0);
+				break;
+			default:
+				System.out.println("没有该选项，请重新选择");
+				break;
+			}
+		}
+
+	}
+
+	public static void main(String[] args) throws Exception {
+		new StudentManage().start();
+	}
+}
